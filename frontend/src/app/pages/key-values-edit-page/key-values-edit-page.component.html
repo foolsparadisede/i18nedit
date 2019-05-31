@@ -1,6 +1,8 @@
 <app-default-view>
 
-  <app-key-value-edit *ngFor="let key of keys" [translationItem]="key"></app-key-value-edit>
+  <ng-container *ngFor="let key of keys">
+    <app-key-value-edit *ngIf="!key.deleted" [translationItem]="key"></app-key-value-edit>
+  </ng-container>
 
   <div class="controls">
     <button mat-flat-button color="primary" (click)="submit()">Commit changes</button>

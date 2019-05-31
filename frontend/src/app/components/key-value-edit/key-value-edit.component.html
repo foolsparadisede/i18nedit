@@ -1,6 +1,7 @@
 <div class="key">
   <span>{{ translationItem.key }}</span>
   <input type="text" [(ngModel)]="translationItem.key" (ngModelChange)="translationItem.setUpdated()">
+  <button (click)="translationItem.delete()">Delete Item</button>
 </div>
 <div class="values">
   <div class="value" *ngFor="let translation of translationItem.translations">
