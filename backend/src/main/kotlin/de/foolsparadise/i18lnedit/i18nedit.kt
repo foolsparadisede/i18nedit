@@ -71,8 +71,10 @@ fun main() {
                 val listType = object : TypeToken<List<TranslationItem>>() {}.type
                 val changes: List<TranslationItem> = gson.fromJson(call.receiveText(), listType)
 
-                translationItemsService.updateTranslations(changes)
-                translationItemsService.exportTranslations()
+                if (changes.isNotEmpty()) {
+                    translationItemsService.updateTranslations(changes)
+                    translationItemsService.exportTranslations()
+                }
 
                 gitService.commitAndPush(changes.size)
 
