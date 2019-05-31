@@ -1,0 +1,10 @@
+<div class="key">
+  <span>{{ translationItem.key }}</span>
+  <input type="text" [(ngModel)]="translationItem.key">
+</div>
+<div class="values">
+  <div class="value" *ngFor="let translation of translationItem.translations">
+    <span>{{ translation.language }}</span>
+    <input type="text" [(ngModel)]="translation.string">
+  </div>
+</div>
