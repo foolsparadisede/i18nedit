@@ -30,6 +30,6 @@ export class KeyValuesEditPageComponent implements OnInit {
 
   submit() {
     const filtered = this.keys.filter(key => key.isUpdated());
-    this.api.updateKeys(filtered);
+    this.api.updateKeys(filtered).then(res => (this.keys = res));
   }
 }
