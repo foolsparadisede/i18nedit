@@ -48,7 +48,7 @@ fun main() {
     val config = loadConfig()
 
     val gitService = GitService(config.gitProjectPath, config.gitUri)
-    val translationItemsService = TranslationItemsService(config.gitProjectPath)
+    val translationItemsService = TranslationItemsService(config.gitProjectPath, config.relativeTranslationFilePath)
 
     val controller = Controller(gitService, translationItemsService, config)
     controller.initGit();

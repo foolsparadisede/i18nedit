@@ -9,7 +9,10 @@ import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
 
-class TranslationItemsService(private val gitProjectPath: String) {
+class TranslationItemsService(
+    private val gitProjectPath: String,
+    private val relativeTranslationFilePath: String
+) {
     private val log = KotlinLogging.logger {}
 
     private val gson = GsonBuilder().setPrettyPrinting().create()
@@ -66,7 +69,11 @@ class TranslationItemsService(private val gitProjectPath: String) {
     fun importTranslationFiles() {
         log.info { "import translation files from $gitProjectPath" }
 
-        val dir = File(gitProjectPath)
+        val dir = File(gitProjectPath).resolve(relativeTranslationFilePath)
+        if (!dir.exists()) {
+            log.warn { "translation dir does not exist (${dir.absolutePath}" }
+            return
+        }
 
         dir.listFiles().filter { it.name.endsWith(".json") }.forEach { file ->
             log.info { "import translation file ${file.name}" }
@@ -93,7 +100,7 @@ class TranslationItemsService(private val gitProjectPath: String) {
         log.info { "export ${translationFiles.size} translations" }
 
         translationFiles.entries.forEach {
-            val exportFile = File(gitProjectPath).resolve(it.key + ".json")
+            val exportFile = File(gitProjectPath).resolve(relativeTranslationFilePath).resolve(it.key + ".json")
             log.info { "export translation - write file ${exportFile.absolutePath}" }
             exportFile.writeText(gson.toJson(it.value))
         }
