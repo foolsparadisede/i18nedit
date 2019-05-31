@@ -14,6 +14,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import mu.KotlinLogging
 import java.io.File
+import java.lang.RuntimeException
 
 private val log = KotlinLogging.logger {}
 
@@ -27,12 +28,24 @@ fun String.pluralize(count: Int, plural: String?): String? {
     }
 }
 
+fun loadConfig() : Config {
+    val configFilePath = System.getenv("CONFIG_FILE")
+    if (configFilePath.isNullOrEmpty())
+        throw RuntimeException("CONFIG_FILE environment-variable missing or empty")
+
+    val configFile = File(configFilePath)
+
+    if (!configFile.exists())
+        throw RuntimeException("config file does not exist")
+
+    log.info { "config file: ${configFile.absolutePath}" }
+
+    return gson.fromJson(configFile.readText(), Config::class.java)
+}
+
 fun main() {
 
-    val configFilePath = System.getenv("CONFIG_FILE")
-    log.info { "config file: $configFilePath" }
-
-    val config: Config = gson.fromJson(File(configFilePath).readText(), Config::class.java)
+    val config = loadConfig()
 
     val gitService = GitService(config.gitProjectPath, config.gitUri)
     val translationItemsService = TranslationItemsService(config.gitProjectPath)
