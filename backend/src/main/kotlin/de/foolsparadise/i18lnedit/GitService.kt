@@ -28,11 +28,11 @@ class GitService(val gitProjectRoot: String, val uri: String) {
         Git.open(File(gitProjectRoot)).pull().call()
     }
 
-    fun commitAndPush() {
+    fun commitAndPush(changesCount: Int) {
         log.info { "execute git commit and push on $gitProjectRoot" }
 
         Git.open(File(gitProjectRoot)).add().addFilepattern(".").call()
-        Git.open(File(gitProjectRoot)).commit().setMessage("update translations").call()
+        Git.open(File(gitProjectRoot)).commit().setMessage("updated $changesCount translations").call()
         Git.open(File(gitProjectRoot)).push().call()
     }
 

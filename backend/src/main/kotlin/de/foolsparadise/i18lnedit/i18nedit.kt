@@ -53,7 +53,6 @@ fun main() {
 
         routing {
 
-
             get("/config") {
                 call.respondText(gson.toJson(config), ContentType.Application.Json)
             }
@@ -69,7 +68,7 @@ fun main() {
                 translationItemsService.updateTranslations(changes)
                 translationItemsService.exportTranslations()
 
-                gitService.commitAndPush()
+                gitService.commitAndPush(changes.size)
 
                 call.respondText(gson.toJson(translationItemsService.translationItems), ContentType.Application.Json)
             }
