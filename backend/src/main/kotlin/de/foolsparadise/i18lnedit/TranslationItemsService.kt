@@ -118,6 +118,7 @@ class TranslationItemsService(val gitProjectPath: String) {
             }
 
             log.info { "item with id ${change.id} replaced" }
+
             translationItems.remove(item)
             translationItems.add(change)
         }

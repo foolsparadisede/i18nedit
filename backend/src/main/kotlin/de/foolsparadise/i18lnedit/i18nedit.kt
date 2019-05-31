@@ -61,6 +61,12 @@ fun main() {
                 call.respondText(gson.toJson(translationItemsService.translationItems), ContentType.Application.Json)
             }
 
+            post("/reimport") {
+                gitService.pull()
+                translationItemsService.translationItems.clear()
+                translationItemsService.importTranslationFiles()
+            }
+
             post("/update") {
                 val listType = object : TypeToken<List<TranslationItem>>() {}.type
                 val changes: List<TranslationItem> = gson.fromJson(call.receiveText(), listType)
