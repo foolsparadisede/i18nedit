@@ -42,6 +42,7 @@ export class TranslationItem {
   }
 
   public delete() {
+    this.setUpdated();
     this.deleted = true;
   }
 }
