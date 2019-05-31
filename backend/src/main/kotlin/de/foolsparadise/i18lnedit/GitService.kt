@@ -32,7 +32,7 @@ class GitService(val gitProjectRoot: String, val uri: String) {
         log.info { "execute git commit and push on $gitProjectRoot" }
 
         Git.open(File(gitProjectRoot)).add().addFilepattern(".").call()
-        Git.open(File(gitProjectRoot)).commit().setMessage("updated $changesCount translations").call()
+        Git.open(File(gitProjectRoot)).commit().setMessage("i18nedit: updated $changesCount translations").call()
         Git.open(File(gitProjectRoot)).push().call()
     }
 
