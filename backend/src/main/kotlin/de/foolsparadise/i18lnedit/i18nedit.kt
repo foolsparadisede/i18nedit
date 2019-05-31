@@ -1,7 +1,11 @@
 package de.foolsparadise.i18lnedit
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import de.foolsparadise.i18lnedit.models.TranslationItem
 import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.CORS
 import io.ktor.http.ContentType
 import io.ktor.request.receiveText
 import io.ktor.response.respondText
@@ -43,7 +47,12 @@ fun main() {
     translationItemsService.parseTranslations()
 
     val server = embeddedServer(Netty, port = 8080) {
+        install(CORS) {
+            anyHost()
+        }
+
         routing {
+
 
             get("/config") {
                 call.respondText(gson.toJson(config), ContentType.Application.Json)
@@ -54,8 +63,8 @@ fun main() {
             }
 
             post("/update") {
-                val changes =
-                    gson.fromJson<List<TranslationItemsService.TranslationItem>>(call.receiveText(), List::class.java)
+                val listType = object : TypeToken<List<TranslationItem>>() {}.type
+                val changes: List<TranslationItem> = gson.fromJson(call.receiveText(), listType)
 
                 translationItemsService.updateTranslations(changes)
                 translationItemsService.exportTranslations()

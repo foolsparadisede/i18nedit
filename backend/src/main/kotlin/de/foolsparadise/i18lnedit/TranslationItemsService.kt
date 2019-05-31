@@ -1,7 +1,9 @@
 package de.foolsparadise.i18lnedit
 
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.google.gson.internal.LinkedTreeMap
+import de.foolsparadise.i18lnedit.models.TranslationItem
+import de.foolsparadise.i18lnedit.models.TranslationString
 import mu.KotlinLogging
 import java.io.File
 import java.util.*
@@ -10,19 +12,8 @@ import kotlin.collections.HashMap
 class TranslationItemsService(val gitProjectPath: String) {
     private val log = KotlinLogging.logger {}
 
-    data class TranslationItem(
-        val key: String,
-        val translations: MutableList<TranslationString>,
-        var id: String?,
-        val deleted: Boolean? = false
-    )
+    private val gson = GsonBuilder().setPrettyPrinting().create();
 
-    data class TranslationString(
-        val language: String,
-        val string: String
-    )
-
-    private val gson = Gson()
 
     val translationItems = mutableListOf<TranslationItem>()
 
