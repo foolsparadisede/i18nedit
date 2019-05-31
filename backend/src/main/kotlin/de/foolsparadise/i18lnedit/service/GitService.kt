@@ -1,11 +1,18 @@
 package de.foolsparadise.i18lnedit.service
 
+import com.jcraft.jsch.JSch
+import com.jcraft.jsch.Session
 import de.foolsparadise.i18lnedit.pluralize
 import mu.KotlinLogging
 import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.transport.JschConfigSessionFactory
+import org.eclipse.jgit.transport.OpenSshConfig
+import org.eclipse.jgit.transport.SshTransport
+import org.eclipse.jgit.transport.Transport
+import org.eclipse.jgit.util.FS
 import java.io.File
 
-class GitService(val gitProjectRoot: String, val uri: String) {
+class GitService(val gitProjectRoot: String, val uri: String, val sshKeyPath: String?) {
     private val log = KotlinLogging.logger {}
 
     var rootDir = File(gitProjectRoot)
@@ -18,15 +25,31 @@ class GitService(val gitProjectRoot: String, val uri: String) {
         log.info { "execute git clone on $uri to $gitProjectRoot" }
 
         Git.cloneRepository()
+            .setTransportConfigCallback { setTransport(it) }
             .setURI(uri)
             .setDirectory(File(gitProjectRoot))
             .call()
     }
 
+    private fun setTransport(transport: Transport?) {
+        (transport as SshTransport).sshSessionFactory = object : JschConfigSessionFactory() {
+            override fun configure(hc: OpenSshConfig.Host?, session: Session?) {}
+
+            override fun createDefaultJSch(fs: FS?): JSch {
+                val defaultJSch = super.createDefaultJSch(fs)
+                if (sshKeyPath != null)
+                    defaultJSch.addIdentity(sshKeyPath)
+                return defaultJSch
+            }
+        }
+    }
+
     fun pull() {
         log.info { "execute git pull on $gitProjectRoot" }
 
-        Git.open(File(gitProjectRoot)).pull().call()
+        Git.open(File(gitProjectRoot)).pull()
+            .setTransportConfigCallback { setTransport(it) }
+            .call()
     }
 
     fun commitAndPush(changesCount: Int) {
@@ -43,7 +66,9 @@ class GitService(val gitProjectRoot: String, val uri: String) {
 
         val translations = "translation".pluralize(changesCount, "translations")
         Git.open(root).commit().setMessage("i18nedit: updated $changesCount $translations").call()
-        Git.open(root).push().call()
+        Git.open(root).push()
+            .setTransportConfigCallback { setTransport(it) }
+            .call()
     }
 
 
