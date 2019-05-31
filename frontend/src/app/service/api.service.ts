@@ -20,10 +20,8 @@ export class ApiService {
 
   updateKeys(changed: TranslationItem[]): Promise<void> {
     return this.http
-      .post(`${environment.apiUrl}/update`, changed)
+      .post(`${environment.apiUrl}/update`, changed.map(item => item.toJson()))
       .toPromise()
-      .then(res => {
-        return;
-      });
+      .then(() => undefined);
   }
 }
