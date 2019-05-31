@@ -9,11 +9,10 @@ import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
 
-class TranslationItemsService(val gitProjectPath: String) {
+class TranslationItemsService(private val gitProjectPath: String) {
     private val log = KotlinLogging.logger {}
 
     private val gson = GsonBuilder().setPrettyPrinting().create()
-
 
     val translationItems = mutableListOf<TranslationItem>()
 
@@ -51,7 +50,7 @@ class TranslationItemsService(val gitProjectPath: String) {
                 // }
                 //
                 else -> {
-                    (it.value as LinkedTreeMap<String, String>).entries.forEach { nested ->
+                    (it.value as LinkedTreeMap<*, *>).entries.forEach { nested ->
 
                         addTranslationItem(
                             file.nameWithoutExtension,
@@ -76,9 +75,10 @@ class TranslationItemsService(val gitProjectPath: String) {
     }
 
     fun exportTranslations() {
-        log.info { "export translations" }
+        //                             language        key     value
         val translationFiles = HashMap<String, HashMap<String, String>>()
 
+        // group items by language
         translationItems.forEach { item ->
             item.translations.forEach { string ->
                 val file = translationFiles[string.language]
@@ -89,6 +89,8 @@ class TranslationItemsService(val gitProjectPath: String) {
                 }
             }
         }
+
+        log.info { "export ${translationFiles.size} translations" }
 
         translationFiles.entries.forEach {
             val exportFile = File(gitProjectPath).resolve(it.key + ".json")

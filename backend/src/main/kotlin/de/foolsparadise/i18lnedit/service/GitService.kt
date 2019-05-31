@@ -31,9 +31,17 @@ class GitService(val gitProjectRoot: String, val uri: String) {
     fun commitAndPush(changesCount: Int) {
         log.info { "execute git commit and push on $gitProjectRoot" }
 
-        Git.open(File(gitProjectRoot)).add().addFilepattern(".").call()
-        Git.open(File(gitProjectRoot)).commit().setMessage("i18nedit: updated $changesCount translations").call()
-        Git.open(File(gitProjectRoot)).push().call()
+        val root = File(gitProjectRoot)
+
+        Git.open(root).add().addFilepattern(".").call()
+
+        if (Git.open(root).status().call().changed.size == 0) {
+            log.warn { "git detected no changes -> abort commit" }
+            return
+        }
+
+        Git.open(root).commit().setMessage("i18nedit: updated $changesCount translations").call()
+        Git.open(root).push().call()
     }
 
 
