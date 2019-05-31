@@ -1,4 +1,4 @@
-package de.foolsparadise.i18lnedit
+package de.foolsparadise.i18lnedit.service
 
 import mu.KotlinLogging
 import org.eclipse.jgit.api.Git

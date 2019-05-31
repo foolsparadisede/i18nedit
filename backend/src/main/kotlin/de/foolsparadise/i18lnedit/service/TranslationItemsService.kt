@@ -1,4 +1,4 @@
-package de.foolsparadise.i18lnedit
+package de.foolsparadise.i18lnedit.service
 
 import com.google.gson.GsonBuilder
 import com.google.gson.internal.LinkedTreeMap
