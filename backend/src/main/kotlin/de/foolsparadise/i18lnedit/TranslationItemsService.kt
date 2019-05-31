@@ -12,13 +12,12 @@ import kotlin.collections.HashMap
 class TranslationItemsService(val gitProjectPath: String) {
     private val log = KotlinLogging.logger {}
 
-    private val gson = GsonBuilder().setPrettyPrinting().create();
+    private val gson = GsonBuilder().setPrettyPrinting().create()
 
 
     val translationItems = mutableListOf<TranslationItem>()
 
     private fun addTranslationItem(language: String, key: String, value: String) {
-
         val translation = TranslationString(
             language = language,
             string = value
@@ -33,36 +32,51 @@ class TranslationItemsService(val gitProjectPath: String) {
         }
     }
 
-    fun parseTranslations() {
-        val dir = File(gitProjectPath)
+    private fun importTranslationFile(file: File) {
+        val languageTranslation = gson.fromJson<HashMap<String, Any>>(file.readText(), HashMap::class.java)
 
-        dir.listFiles().filter { it.name.endsWith(".json") }.forEach { file ->
+        languageTranslation.entries.forEach {
+            when {
+                it.value is String -> addTranslationItem(file.nameWithoutExtension, it.key, it.value.toString())
 
-            log.info { "parse translation file ${file.name}" }
+                // flattening nested keys
+                //
+                // handles cases like this:
+                // {
+                //    "button.save.label": "save",
+                //    "projects: {   <----- THIS IS SHIT
+                //       "button.save.label": "save"
+                //       "button.cancel.label": "cancel"
+                //     }
+                // }
+                //
+                else -> {
+                    (it.value as LinkedTreeMap<String, String>).entries.forEach { nested ->
 
-            val languageTranslation = gson.fromJson<HashMap<String, Any>>(file.readText(), HashMap::class.java)
-
-            languageTranslation.entries.forEach {
-                when {
-                    it.value is String -> addTranslationItem(file.nameWithoutExtension, it.key, it.value.toString())
-
-                    // special nested case
-                    it.value !is String -> {
-                        (it.value as LinkedTreeMap<String, String>).entries.forEach { nested ->
-
-                            addTranslationItem(
-                                file.nameWithoutExtension,
-                                it.key + "." + nested.key,
-                                nested.value.toString()
-                            )
-                        }
+                        addTranslationItem(
+                            file.nameWithoutExtension,
+                            it.key + "." + nested.key,
+                            nested.value.toString()
+                        )
                     }
                 }
             }
         }
     }
 
+    fun importTranslationFiles() {
+        log.info { "import translation files from $gitProjectPath" }
+
+        val dir = File(gitProjectPath)
+
+        dir.listFiles().filter { it.name.endsWith(".json") }.forEach { file ->
+            log.info { "import translation file ${file.name}" }
+            importTranslationFile(file)
+        }
+    }
+
     fun exportTranslations() {
+        log.info { "export translations" }
         val translationFiles = HashMap<String, HashMap<String, String>>()
 
         translationItems.forEach { item ->
@@ -89,7 +103,7 @@ class TranslationItemsService(val gitProjectPath: String) {
         changes.forEach { change ->
 
             if (change.id.isNullOrEmpty()) {
-                log.info { "new item" }
+                log.info { "new item with key ${change.key}" }
                 change.id = UUID.randomUUID().toString()
                 translationItems.add(change)
                 return@forEach
@@ -104,7 +118,7 @@ class TranslationItemsService(val gitProjectPath: String) {
             }
 
             log.info { "item with id ${change.id} replaced" }
-            translationItems.remove(item);
+            translationItems.remove(item)
             translationItems.add(change)
         }
     }

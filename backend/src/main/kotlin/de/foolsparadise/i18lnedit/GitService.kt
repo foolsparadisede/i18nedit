@@ -14,7 +14,7 @@ class GitService(val gitProjectRoot: String, val uri: String) {
     }
 
     fun clone() {
-        log.info { "execute git clone" }
+        log.info { "execute git clone on $uri to $gitProjectRoot" }
 
         Git.cloneRepository()
             .setURI(uri)
@@ -23,12 +23,13 @@ class GitService(val gitProjectRoot: String, val uri: String) {
     }
 
     fun pull() {
-        log.info { "execute git pull" }
+        log.info { "execute git pull on $gitProjectRoot" }
+
         Git.open(File(gitProjectRoot)).pull().call()
     }
 
     fun commitAndPush() {
-        log.info { "execute git commit and push" }
+        log.info { "execute git commit and push on $gitProjectRoot" }
 
         Git.open(File(gitProjectRoot)).add().addFilepattern(".").call()
         Git.open(File(gitProjectRoot)).commit().setMessage("update translations").call()

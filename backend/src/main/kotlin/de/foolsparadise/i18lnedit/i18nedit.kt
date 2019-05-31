@@ -44,7 +44,7 @@ fun main() {
         gitService.pull()
     }
 
-    translationItemsService.parseTranslations()
+    translationItemsService.importTranslationFiles()
 
     val server = embeddedServer(Netty, port = 8080) {
         install(CORS) {
