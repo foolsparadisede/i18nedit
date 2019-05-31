@@ -74,9 +74,8 @@ fun main() {
                 if (changes.isNotEmpty()) {
                     translationItemsService.updateTranslations(changes)
                     translationItemsService.exportTranslations()
+                    gitService.commitAndPush(changes.size)
                 }
-
-                gitService.commitAndPush(changes.size)
 
                 call.respondText(gson.toJson(translationItemsService.translationItems), ContentType.Application.Json)
             }
