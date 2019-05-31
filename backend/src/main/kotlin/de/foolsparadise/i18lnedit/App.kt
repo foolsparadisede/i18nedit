@@ -19,6 +19,14 @@ private val log = KotlinLogging.logger {}
 
 private val gson = Gson()
 
+fun String.pluralize(count: Int, plural: String?): String? {
+    return if (count > 1) {
+        plural ?: this + 's'
+    } else {
+        this
+    }
+}
+
 fun main() {
 
     val configFilePath = System.getenv("CONFIG_FILE")

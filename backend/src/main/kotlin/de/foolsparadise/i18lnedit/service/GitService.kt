@@ -1,5 +1,6 @@
 package de.foolsparadise.i18lnedit.service
 
+import de.foolsparadise.i18lnedit.pluralize
 import mu.KotlinLogging
 import org.eclipse.jgit.api.Git
 import java.io.File
@@ -40,7 +41,8 @@ class GitService(val gitProjectRoot: String, val uri: String) {
             return
         }
 
-        Git.open(root).commit().setMessage("i18nedit: updated $changesCount translations").call()
+        val translations = "translation".pluralize(changesCount, "translations")
+        Git.open(root).commit().setMessage("i18nedit: updated $changesCount $translations").call()
         Git.open(root).push().call()
     }
 
