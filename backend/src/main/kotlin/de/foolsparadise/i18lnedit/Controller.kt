@@ -26,7 +26,7 @@ class Controller(
             log.info { "clone repo from ${config.gitUri} to ${config.gitProjectPath}" }
             gitService.clone()
         } else {
-            log.info { "repo already cloned (${config.gitProjectPath}). do a pull instead" }
+            log.info { "repo already cloned (${config.gitProjectPath}). pull instead" }
             gitService.pull()
         }
 

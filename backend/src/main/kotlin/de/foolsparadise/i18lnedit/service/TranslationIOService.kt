@@ -101,8 +101,12 @@ class TranslationIOService(
 
         log.info { "export ${translationFiles.size} translations" }
 
+        val translationDir = File(gitProjectPath).resolve(relativeTranslationFilePath)
+        if (!translationDir.exists())
+            translationDir.mkdirs()
+
         translationFiles.entries.forEach {
-            val exportFile = File(gitProjectPath).resolve(relativeTranslationFilePath).resolve(it.key + ".json")
+            val exportFile = translationDir.resolve(it.key + ".json")
             log.info { "export translation - write file ${exportFile.absolutePath}" }
             exportFile.writeText(gson.toJson(it.value))
         }
