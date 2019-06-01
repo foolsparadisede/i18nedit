@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken
 import de.foolsparadise.i18lnedit.models.Config
 import de.foolsparadise.i18lnedit.models.TranslationItem
 import de.foolsparadise.i18lnedit.service.GitService
-import de.foolsparadise.i18lnedit.service.TranslationItemsService
+import de.foolsparadise.i18lnedit.service.TranslationIOService
 import io.ktor.application.ApplicationCall
 import io.ktor.http.ContentType
 import io.ktor.request.receiveText
@@ -14,7 +14,7 @@ import mu.KotlinLogging
 
 class Controller(
     private val gitService: GitService,
-    private val translationItemsService: TranslationItemsService,
+    private val translationIOService: TranslationIOService,
     private val config: Config
 ) {
     private val log = KotlinLogging.logger {}
@@ -30,7 +30,7 @@ class Controller(
             gitService.pull()
         }
 
-        translationItemsService.importTranslationFiles()
+        translationIOService.importTranslationFiles()
     }
 
     suspend fun config(call: ApplicationCall) {
@@ -38,13 +38,13 @@ class Controller(
     }
 
     suspend fun items(call: ApplicationCall) {
-        call.respondText(gson.toJson(translationItemsService.translationItems), ContentType.Application.Json)
+        call.respondText(gson.toJson(translationIOService.translationItems), ContentType.Application.Json)
     }
 
     suspend fun reimport(call: ApplicationCall) {
         gitService.pull()
-        translationItemsService.translationItems.clear()
-        translationItemsService.importTranslationFiles()
+        translationIOService.translationItems.clear()
+        translationIOService.importTranslationFiles()
     }
 
     suspend fun update(call: ApplicationCall) {
@@ -52,13 +52,13 @@ class Controller(
         val changes: List<TranslationItem> = gson.fromJson(call.receiveText(), listType)
 
         if (changes.isNotEmpty()) {
-            translationItemsService.updateTranslations(changes)
-            translationItemsService.exportTranslations()
+            translationIOService.updateTranslations(changes)
+            translationIOService.exportTranslations()
             gitService.commitAndPush(changes.size)
         }
 
         call.respondText(
-            gson.toJson(translationItemsService.translationItems),
+            gson.toJson(translationIOService.translationItems),
             ContentType.Application.Json
         )
     }

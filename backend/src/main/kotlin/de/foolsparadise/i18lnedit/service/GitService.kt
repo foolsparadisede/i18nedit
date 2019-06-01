@@ -59,7 +59,9 @@ class GitService(val gitProjectRoot: String, val uri: String, val sshKeyPath: St
 
         Git.open(root).add().addFilepattern(".").call()
 
-        if (Git.open(root).status().call().changed.size == 0) {
+        val status = Git.open(root).status().call()
+
+        if (status.isClean) {
             log.warn { "git detected no changes -> abort commit" }
             return
         }

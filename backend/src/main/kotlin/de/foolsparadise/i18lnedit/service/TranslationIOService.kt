@@ -9,7 +9,7 @@ import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
 
-class TranslationItemsService(
+class TranslationIOService(
     private val gitProjectPath: String,
     private val relativeTranslationFilePath: String
 ) {

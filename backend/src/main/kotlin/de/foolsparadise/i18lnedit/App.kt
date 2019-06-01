@@ -3,7 +3,7 @@ package de.foolsparadise.i18lnedit
 import com.google.gson.Gson
 import de.foolsparadise.i18lnedit.models.Config
 import de.foolsparadise.i18lnedit.service.GitService
-import de.foolsparadise.i18lnedit.service.TranslationItemsService
+import de.foolsparadise.i18lnedit.service.TranslationIOService
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.CORS
@@ -14,7 +14,6 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import mu.KotlinLogging
 import java.io.File
-import java.lang.RuntimeException
 
 private val log = KotlinLogging.logger {}
 
@@ -28,7 +27,7 @@ fun String.pluralize(count: Int, plural: String?): String? {
     }
 }
 
-fun loadConfig() : Config {
+fun loadConfig(): Config {
     val configFilePath = System.getenv("CONFIG_FILE")
     if (configFilePath.isNullOrEmpty())
         throw RuntimeException("CONFIG_FILE environment-variable missing or empty")
@@ -47,10 +46,23 @@ fun main() {
 
     val config = loadConfig()
 
-    val gitService = GitService(config.gitProjectPath, config.gitUri, config.sshKeyPath)
-    val translationItemsService = TranslationItemsService(config.gitProjectPath, config.relativeTranslationFilePath)
+    val gitService = GitService(
+        config.gitProjectPath,
+        config.gitUri,
+        config.sshKeyPath
+    )
 
-    val controller = Controller(gitService, translationItemsService, config)
+    val translationIOService = TranslationIOService(
+        config.gitProjectPath,
+        config.relativeTranslationFilePath
+    )
+
+    val controller = Controller(
+        gitService,
+        translationIOService,
+        config
+    )
+
     controller.initGit();
 
     val server = embeddedServer(Netty, port = 8080) {
