@@ -45,6 +45,8 @@ class Controller(
         gitService.pull()
         translationIOService.translationItems.clear()
         translationIOService.importTranslationFiles()
+
+        call.respondText(gson.toJson(translationIOService.translationItems), ContentType.Application.Json)
     }
 
     suspend fun update(call: ApplicationCall) {
