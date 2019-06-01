@@ -19,9 +19,14 @@ class TranslationIOService(
 
     private val gson = GsonBuilder().setPrettyPrinting().create()
 
+    data class TranslationKVItem(
+        val key: String,
+        val value: String
+    )
+
     val translationItems = mutableListOf<TranslationItem>()
 
-    private fun addTranslationItem(language: String, key: String, value: String) {
+    private fun importTranslation(language: String, key: String, value: String) {
         val translation = TranslationString(
             language = language,
             string = value
@@ -36,12 +41,14 @@ class TranslationIOService(
         }
     }
 
-    private fun importTranslationFile(file: File) {
+    private fun importTranslationFile(file: File): List<TranslationKVItem> {
         val languageTranslation = gson.fromJson<HashMap<String, Any>>(file.readText(), HashMap::class.java)
+
+        val importedItems = mutableListOf<TranslationKVItem>()
 
         languageTranslation.entries.forEach {
             when {
-                it.value is String -> addTranslationItem(file.nameWithoutExtension, it.key, it.value.toString())
+                it.value is String -> importedItems.add(TranslationKVItem(it.key, it.value.toString()))
 
                 // flattening nested keys
                 //
@@ -56,30 +63,35 @@ class TranslationIOService(
                 //
                 else -> {
                     (it.value as LinkedTreeMap<*, *>).entries.forEach { nested ->
-
-                        addTranslationItem(
-                            file.nameWithoutExtension,
-                            it.key + "." + nested.key,
-                            nested.value.toString()
-                        )
+                        importedItems.add(TranslationKVItem(it.key + "." + nested.key, nested.value.toString()))
                     }
                 }
             }
         }
+
+        return importedItems
     }
 
     fun importTranslationFiles() {
-        log.info { "import translation files from $gitProjectPath" }
-
         val dir = File(gitProjectPath).resolve(relativeTranslationFilePath)
+        log.info { "import translation files from ${dir.absolutePath}" }
+
         if (!dir.exists()) {
             log.warn { "translation dir does not exist (${dir.absolutePath}" }
             return
         }
 
         dir.listFiles().filter { it.name.endsWith(".json") }.forEach { file ->
-            log.info { "import translation file ${file.name}" }
-            importTranslationFile(file)
+            try {
+                val translations = importTranslationFile(file)
+
+                translations.forEach { item -> importTranslation(file.nameWithoutExtension, item.key, item.value) }
+
+                log.info { "import translation ${file.nameWithoutExtension} (${translations.size} items)" }
+
+            } catch (ex: Exception) {
+                log.error(ex) { "import translation ${file.absolutePath} failed" }
+            }
         }
     }
 
