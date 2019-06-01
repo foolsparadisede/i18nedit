@@ -2,12 +2,14 @@ package de.foolsparadise.i18lnedit.service
 
 import com.google.gson.GsonBuilder
 import com.google.gson.internal.LinkedTreeMap
+import de.foolsparadise.i18lnedit.models.Language
 import de.foolsparadise.i18lnedit.models.TranslationItem
 import de.foolsparadise.i18lnedit.models.TranslationString
 import mu.KotlinLogging
 import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 class TranslationIOService(
     private val gitProjectPath: String,
@@ -131,5 +133,17 @@ class TranslationIOService(
             translationItems.remove(item)
             translationItems.add(change)
         }
+    }
+
+    fun listAvailableLanguages(): List<Language> {
+        val languages = HashSet<String>()
+
+        translationItems.forEach {
+            it.translations.forEach {
+                languages.add(it.language)
+            }
+        }
+
+        return languages.map { Language(it, Locale.forLanguageTag(it).displayLanguage) }
     }
 }

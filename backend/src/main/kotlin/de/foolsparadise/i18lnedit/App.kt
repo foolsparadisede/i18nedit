@@ -73,6 +73,7 @@ fun main() {
         routing {
             get("/config") { controller.config(call) }
             get("/items") { controller.items(call) }
+            get("/languages") { controller.languages(call) }
             post("/reimport") { controller.reimport(call) }
             post("/update") { controller.update(call) }
         }

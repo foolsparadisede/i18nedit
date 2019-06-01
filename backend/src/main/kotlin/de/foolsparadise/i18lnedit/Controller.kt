@@ -34,11 +34,17 @@ class Controller(
     }
 
     suspend fun config(call: ApplicationCall) {
-        call.respondText(gson.toJson(config), ContentType.Application.Json)
+        call.respondText(
+            gson.toJson(config),
+            ContentType.Application.Json
+        )
     }
 
     suspend fun items(call: ApplicationCall) {
-        call.respondText(gson.toJson(translationIOService.translationItems), ContentType.Application.Json)
+        call.respondText(
+            gson.toJson(translationIOService.translationItems),
+            ContentType.Application.Json
+        )
     }
 
     suspend fun reimport(call: ApplicationCall) {
@@ -46,7 +52,10 @@ class Controller(
         translationIOService.translationItems.clear()
         translationIOService.importTranslationFiles()
 
-        call.respondText(gson.toJson(translationIOService.translationItems), ContentType.Application.Json)
+        call.respondText(
+            gson.toJson(translationIOService.translationItems),
+            ContentType.Application.Json
+        )
     }
 
     suspend fun update(call: ApplicationCall) {
@@ -61,6 +70,13 @@ class Controller(
 
         call.respondText(
             gson.toJson(translationIOService.translationItems),
+            ContentType.Application.Json
+        )
+    }
+
+    suspend fun languages(call: ApplicationCall) {
+        call.respondText(
+            gson.toJson(translationIOService.listAvailableLanguages()),
             ContentType.Application.Json
         )
     }
