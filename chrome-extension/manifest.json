@@ -1,0 +1,32 @@
+{
+  "name": "i18nedit translation live-edit",
+  "version": "1.0",
+  "description": "live translation edits",
+  "permissions": [
+    "declarativeContent",
+    "storage",
+    "contextMenus"
+  ],
+  "background": {
+    "scripts": [
+      "edit.js"
+    ],
+    "persistent": false
+  },
+  "icons": {
+    "16": "images/icon_16.png",
+    "32": "images/icon_32.png",
+    "64": "images/icon_64.png",
+    "128": "images/icon_128.png"
+  },
+  "page_action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon_16.png",
+      "32": "images/icon_32.png",
+      "64": "images/icon_64.png",
+      "128": "images/icon_128.png"
+    }
+  },
+  "manifest_version": 2
+}
