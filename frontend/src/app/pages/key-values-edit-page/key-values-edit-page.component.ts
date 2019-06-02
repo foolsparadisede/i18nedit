@@ -26,10 +26,6 @@ export class KeyValuesEditPageComponent implements OnInit {
     });
   }
 
-  filter(query: string) {
-    this.translationItemService.filterTranslationItems(query);
-  }
-
   addKey() {
     this.translationItemService.addKey();
   }

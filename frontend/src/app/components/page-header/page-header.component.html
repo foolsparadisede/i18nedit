@@ -1,1 +1,10 @@
-
+<header>
+  <div class="container">
+    <input
+      type="text"
+      placeholder="Search"
+      [ngModel]="searchQuery"
+      (ngModelChange)="filter($event)"
+    />
+  </div>
+</header>

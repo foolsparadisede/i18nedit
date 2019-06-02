@@ -1,6 +1,4 @@
 <app-default-view>
-  <input type="text" [ngModel]="searchQuery" (ngModelChange)="filter($event)" />
-
   <ng-container *ngFor="let key of translations | async">
     <app-key-value-edit
       *ngIf="!key.deleted"
