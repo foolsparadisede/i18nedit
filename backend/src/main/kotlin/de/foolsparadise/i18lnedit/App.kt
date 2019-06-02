@@ -7,9 +7,10 @@ import de.foolsparadise.i18lnedit.service.TranslationIOService
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.CORS
-import io.ktor.http.content.file
-import io.ktor.http.content.static
-import io.ktor.http.content.staticRootFolder
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.*
+import io.ktor.response.respond
+import io.ktor.response.respondFile
 import io.ktor.response.respondRedirect
 import io.ktor.routing.get
 import io.ktor.routing.post
@@ -79,7 +80,8 @@ fun main(args: Array<String>) {
             if (System.getenv("APP_HOME") != null) {
                 static("/") {
                     staticRootFolder = File(System.getenv("APP_HOME") + "/www")
-                    file("index.html")
+                    files(File(System.getenv("APP_HOME") + "/www"))
+                    default("index.html")
                 }
             }
 
@@ -89,10 +91,12 @@ fun main(args: Array<String>) {
                 get("/languages") { controller.languages(call) }
                 post("/reimport") { controller.reimport(call) }
                 post("/update") { controller.update(call) }
+                get("/*") {call.respond(HttpStatusCode.NotFound)}
             }
 
+
             get("/{...}") {
-                call.respondRedirect("/index.html")
+                call.respondFile(File(System.getenv("APP_HOME") + "/www/index.html"))
             }
         }
     }
