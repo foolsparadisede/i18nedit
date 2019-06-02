@@ -10,7 +10,7 @@ i18nedit is a tool for editing json translation files in your git repo.
 
 first we need to create a config file with the following content.
 
-```json
+```json5
 {
   "gitProjectPath": "/i18nedit/project", // don't edit
   "sshKeyPath": "/i18nedit/id_rsa", // don't edit
