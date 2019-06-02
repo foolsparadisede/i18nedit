@@ -4,7 +4,7 @@ import { KeyValuesEditPageComponent } from './pages/key-values-edit-page/key-val
 
 const routes: Routes = [
   {
-    path: 'keyValuesEdit',
+    path: '',
     component: KeyValuesEditPageComponent
   }
 ];
