@@ -1,0 +1,6 @@
+{
+  "gitProjectPath": "/i18nedit/project",
+  "relativeTranslationFilePath": "translations/",
+  "gitUri": "git@git.example.com:user/repo.git",
+  "sshKeyPath": "/i18nedit/id_rsa"
+}
