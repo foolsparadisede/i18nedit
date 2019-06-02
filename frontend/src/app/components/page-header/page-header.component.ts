@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TranslationItemService } from 'src/app/service/translation-item.service';
 
 @Component({
   selector: 'app-page-header',
@@ -6,10 +7,13 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./page-header.component.sass']
 })
 export class PageHeaderComponent implements OnInit {
+  constructor(private translationItemService: TranslationItemService) {}
 
-  constructor() { }
+  public searchQuery: string = '';
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  filter(query: string) {
+    this.translationItemService.filterTranslationItems(query);
   }
-
 }
