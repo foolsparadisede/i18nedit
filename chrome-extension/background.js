@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(function () {
-    alert('huch');
+
 });
 
 chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
@@ -12,17 +12,23 @@ chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
     }]);
 });
 
-function clickHandler() {
-
-}
-
 let contextMenu = chrome.contextMenus.create({
-    "id": "123123",
+    "id": "findTranslationMenuItem",
     "title": "Find Translation",
     "contexts": ["all"],
 });
 
-chrome.contextMenus.onClicked.addListener(function(info, tab) {
-    alert(tab);
+chrome.contextMenus.onClicked.addListener(function (info, tab) {
+    if (info.menuItemId !== "findTranslationMenuItem")
+        return;
+
+    chrome.tabs.sendMessage(tab.id, "getClickedEl", function (clickedEl) {
+        if (clickedEl) {
+            console.log(clickedEl)
+            if (clickedEl.innerText && clickedEl.innerText.length > 3) {
+                alert('go to translation -> ' + clickedEl.innerText)
+            }
+        }
+    });
 
 });
