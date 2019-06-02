@@ -31,13 +31,7 @@ export class KeyValuesEditPageComponent implements OnInit {
   }
 
   addKey() {
-    const langs = [];
-    this.languages.forEach(l => {
-      langs.push({ language: l, string: '' });
-    });
-    const newKey = TranslationItem.fromJson({ key: '', translations: langs });
-    newKey.setUpdated();
-    // this.keys.push(newKey);
+    this.translationItemService.addKey();
   }
 
   submit() {

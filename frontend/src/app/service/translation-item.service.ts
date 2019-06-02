@@ -22,6 +22,7 @@ export class TranslationItemService {
   setTranslations(translationItems: TranslationItem[]) {
     this.translations = translationItems;
     const languages = this.languages;
+    this.filteredTranslationsSubject.next(translationItems);
     this.idx = lunr(function() {
       this.ref('id');
       this.field('key');
@@ -40,6 +41,7 @@ export class TranslationItemService {
     });
   }
 
+  private currentFilteredTranslationItems: TranslationItem[] = [];
   filterTranslationItems(query: string, languages?: string[]) {
     let searchRes: any = this.idx.search(query + '*');
     let res: TranslationItem[] = [];
@@ -48,10 +50,25 @@ export class TranslationItemService {
       res.push(this.translations.find(item => item.id === element.ref));
     });
 
+    this.currentFilteredTranslationItems = res;
     this.filteredTranslationsSubject.next(res);
   }
 
   getUpdated(): TranslationItem[] {
     return this.translations.filter(key => key.isUpdated());
+  }
+
+  addKey() {
+    const langs = [];
+    this.languages.forEach(l => {
+      langs.push({ language: l, string: '' });
+    });
+    const newKey = TranslationItem.fromJson({ key: '', translations: langs });
+    newKey.setUpdated();
+
+    this.translations.push(newKey);
+    this.filteredTranslationsSubject.next(
+      this.currentFilteredTranslationItems.concat([newKey])
+    );
   }
 }
