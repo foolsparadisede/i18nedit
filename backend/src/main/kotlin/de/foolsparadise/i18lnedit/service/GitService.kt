@@ -33,7 +33,11 @@ class GitService(val gitProjectRoot: String, val uri: String, val sshKeyPath: St
 
     private fun setTransport(transport: Transport?) {
         (transport as SshTransport).sshSessionFactory = object : JschConfigSessionFactory() {
-            override fun configure(hc: OpenSshConfig.Host?, session: Session?) {}
+            override fun configure(hc: OpenSshConfig.Host?, session: Session?) {
+                if (session != null) {
+                    session.setConfig("StrictHostKeyChecking", "no")
+                }
+            }
 
             override fun createDefaultJSch(fs: FS?): JSch {
                 val defaultJSch = super.createDefaultJSch(fs)
