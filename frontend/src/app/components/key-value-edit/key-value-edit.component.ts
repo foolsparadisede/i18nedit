@@ -12,4 +12,13 @@ export class KeyValueEditComponent implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  autogrow(ev) {
+    let textArea = ev.target;
+    setTimeout(() => {
+      textArea.style.overflow = 'hidden';
+      textArea.style.height = '0px';
+      textArea.style.height = textArea.scrollHeight + 'px';
+    });
+  }
 }

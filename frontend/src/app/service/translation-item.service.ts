@@ -22,7 +22,7 @@ export class TranslationItemService {
   setTranslations(translationItems: TranslationItem[]) {
     this.translations = translationItems;
     const languages = this.languages;
-    this.filteredTranslationsSubject.next(translationItems);
+
     this.idx = lunr(function() {
       this.ref('id');
       this.field('key');
@@ -39,6 +39,8 @@ export class TranslationItemService {
         this.add(doc);
       }, this);
     });
+
+    this.filterTranslationItems('');
   }
 
   private currentFilteredTranslationItems: TranslationItem[] = [];
@@ -59,12 +61,7 @@ export class TranslationItemService {
   }
 
   addKey() {
-    const langs = [];
-    this.languages.forEach(l => {
-      langs.push({ language: l, string: '' });
-    });
-    const newKey = TranslationItem.fromJson({ key: '', translations: langs });
-    newKey.setUpdated();
+    const newKey = TranslationItem.create(this.languages);
 
     this.translations.push(newKey);
     this.filteredTranslationsSubject.next(
