@@ -14,21 +14,37 @@ chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
 
 let contextMenu = chrome.contextMenus.create({
     "id": "findTranslationMenuItem",
-    "title": "Find Translation",
+    "title": "Edit Translation",
     "contexts": ["all"],
+});
+
+let translationItem = null
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+
+    if (request) {
+        console.log(request)
+        if (request.innerText && request.innerText.length > 3) {
+            translationItem = request
+            chrome.contextMenus.update("findTranslationMenuItem", {
+                enabled: true,
+                title: "Edit Translation '" + request.innerText + "'"
+            });
+        } else {
+            translationItem = null
+            chrome.contextMenus.update("findTranslationMenuItem", {
+                enabled: false,
+                title: "Edit Translation"
+            });
+        }
+    }
 });
 
 chrome.contextMenus.onClicked.addListener(function (info, tab) {
     if (info.menuItemId !== "findTranslationMenuItem")
         return;
 
-    chrome.tabs.sendMessage(tab.id, "getClickedEl", function (clickedEl) {
-        if (clickedEl) {
-            console.log(clickedEl)
-            if (clickedEl.innerText && clickedEl.innerText.length > 3) {
-                alert('go to translation -> ' + clickedEl.innerText)
-            }
-        }
-    });
+    if (translationItem)
+        alert('go to translation -> ' + translationItem.innerText)
 
 });
