@@ -47,7 +47,7 @@ fun loadConfig(): Config {
     return gson.fromJson(configFile.readText(), Config::class.java)
 }
 
-fun main() {
+fun main(args: Array<String>) {
 
     val config = loadConfig()
 
