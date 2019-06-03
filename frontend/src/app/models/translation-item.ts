@@ -1,4 +1,5 @@
 import { TranslationString } from './translation-string';
+import { Subject, Observable } from 'rxjs';
 
 export class TranslationItem {
   public id: string;
@@ -7,6 +8,9 @@ export class TranslationItem {
 
   public deleted?: boolean;
   private updated?: boolean;
+
+  public changeSubject: Subject<void> = new Subject();
+  public changeObservable = this.changeSubject.asObservable();
 
   public static create(langs: string[]): TranslationItem {
     const res = new TranslationItem();
@@ -45,6 +49,7 @@ export class TranslationItem {
 
   public setUpdated() {
     this.updated = true;
+    this.changeSubject.next();
   }
 
   public isUpdated(): boolean {

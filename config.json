@@ -1,0 +1,6 @@
+{
+  "gitProjectPath": "/i18nedit/project", // don't edit
+  "sshKeyPath": "/i18nedit/id_rsa", // don't edit
+  "relativeTranslationFilePath": "alpas-frontend/src/assets/i18n/", // path of your translations folder relative to the repo
+  "gitUri": "git@10.10.10.15:alpas/alpas.git" // your repo uri (currently just ssh)
+}

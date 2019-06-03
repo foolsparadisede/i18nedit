@@ -1,24 +1,31 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { TranslationItem } from 'src/app/models/translation-item';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-key-value-edit',
   templateUrl: './key-value-edit.component.html',
-  styleUrls: ['./key-value-edit.component.sass']
+  styleUrls: ['./key-value-edit.component.sass'],
 })
 export class KeyValueEditComponent implements OnInit {
-  @Input() translationItem: TranslationItem;
+
+  public subject: Subject<any> = new Subject();
+  public observable = this.subject.asObservable();
+
+  private _translationItem: TranslationItem;
+  @Input()
+  set translationItem(translationItem: TranslationItem) {
+    this._translationItem = translationItem;
+    setTimeout(() => {
+      this.subject.next();
+    });
+  }
+
+  get translationItem() {
+    return this._translationItem;
+  }
 
   constructor() {}
 
   ngOnInit() {}
-
-  autogrow(ev) {
-    let textArea = ev.target;
-    setTimeout(() => {
-      textArea.style.overflow = 'hidden';
-      textArea.style.height = '0px';
-      textArea.style.height = textArea.scrollHeight + 'px';
-    });
-  }
 }
