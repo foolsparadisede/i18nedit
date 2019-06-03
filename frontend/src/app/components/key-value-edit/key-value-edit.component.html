@@ -4,7 +4,7 @@
 </div>
 <div class="values">
   <div class="value" *ngFor="let translation of translationItem.translations">
-    <div>{{ translation.language }}</div>
+    <div class="language">{{ translation.language }}</div>
     <textarea [autosize]="observable" rows="1" [(ngModel)]="translation.string" (ngModelChange)="translationItem.setUpdated()"></textarea>
   </div>
 </div>
