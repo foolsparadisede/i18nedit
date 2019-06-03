@@ -1,22 +1,11 @@
 <div class="key">
-  <input
-    type="text"
-    class="keyInput"
-    [(ngModel)]="translationItem.key"
-    (ngModelChange)="translationItem.setUpdated()"
-    tabindex="-1"
-    placeholder="Translation Key"
-  />
+  <input type="text" class="keyInput" [(ngModel)]="translationItem.key" (ngModelChange)="translationItem.setUpdated()"
+    tabindex="-1" placeholder="Translation Key" />
 </div>
 <div class="values">
   <div class="value" *ngFor="let translation of translationItem.translations">
-    <div>{{ translation.language }}</div>
-    <textarea
-      rows="1"
-      [(ngModel)]="translation.string"
-      (ngModelChange)="translationItem.setUpdated()"
-      (keydown)="autogrow($event)"
-    ></textarea>
+    <div class="language">{{ translation.language }}</div>
+    <textarea [autosize]="observable" rows="1" [(ngModel)]="translation.string" (ngModelChange)="translationItem.setUpdated()"></textarea>
   </div>
 </div>
 <span (click)="translationItem.delete()" class="deleteButton">X</span>

@@ -6,7 +6,7 @@
     border-radius: 5px
     background: #fff
     box-sizing: border-box
-    padding: 10px
+    padding: 10px 20px
     position: relative
     +shadow
 
@@ -20,7 +20,7 @@
     top: 5px
     right: 5px
     cursor: pointer
-    color: red
+    color: #d81111
 
 =rmInputStyle
     border: none
@@ -30,16 +30,24 @@
     outline: none
     resize: none
 
+.key
+    margin-bottom: 20px
+
 .keyInput
     +rmInputStyle
-    font-size: 14px
-    color: #888
+    width: 100%
+    color: #512e90
 
     &:focus
         color: #000
 
 .value
-    margin-top: 5px
+    margin-top: 10px
+
+.language
+    margin-bottom: 5px
+    font-size: 14px
+    color: #888
 
 textarea
     +rmInputStyle
