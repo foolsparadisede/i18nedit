@@ -55,7 +55,8 @@ fun main(args: Array<String>) {
     val gitService = GitService(
         config.gitProjectPath,
         config.gitUri,
-        config.sshKeyPath
+        config.sshKeyPath,
+        config.gitBranch
     )
 
     val translationIOService = TranslationIOService(

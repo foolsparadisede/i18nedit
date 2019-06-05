@@ -12,7 +12,7 @@ import org.eclipse.jgit.transport.Transport
 import org.eclipse.jgit.util.FS
 import java.io.File
 
-class GitService(val gitProjectRoot: String, val uri: String, val sshKeyPath: String?) {
+class GitService(val gitProjectRoot: String, val uri: String, val sshKeyPath: String?, val branch: String?) {
     private val log = KotlinLogging.logger {}
 
     var rootDir = File(gitProjectRoot)
@@ -24,11 +24,16 @@ class GitService(val gitProjectRoot: String, val uri: String, val sshKeyPath: St
     fun clone() {
         log.info { "execute git clone on $uri to $gitProjectRoot" }
 
-        Git.cloneRepository()
+        var clone = Git.cloneRepository()
             .setTransportConfigCallback { setTransport(it) }
             .setURI(uri)
             .setDirectory(File(gitProjectRoot))
-            .call()
+
+        if (branch != null) {
+            clone.setBranch(branch)
+        }
+
+        clone.call()
     }
 
     private fun setTransport(transport: Transport?) {
