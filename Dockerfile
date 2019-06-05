@@ -3,7 +3,6 @@ FROM openjdk:9-jre
 ARG http_port=8080
 # the home directory where the app is located
 ENV APP_HOME /var/i18nedit
-ENV CONFIG_FILE /i18nedit/config.json
 
 # create home directory
 RUN mkdir -p $APP_HOME

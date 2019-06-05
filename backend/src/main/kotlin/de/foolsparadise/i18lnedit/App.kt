@@ -39,25 +39,35 @@ fun loadConfig(): Config {
         var gitProjectPath: String = "/i18nedit/project"
         var sshKeyPath: String = "/i18nedit/id_rsa"
         var relativeTranslationFilePath = ""
+        var gitUri: String = ""
+        var gitBranch: String = ""
 
         if (System.getenv("GIT_PROJECT_PATH") != null) {
-            gitProjectPath = System.getenv("GIT_PROJECT_PATH");
+            gitProjectPath = System.getenv("GIT_PROJECT_PATH")
         }
 
         if (System.getenv("SSH_KEY_PATH") != null) {
-            sshKeyPath = System.getenv("SSH_KEY_PATH");
+            sshKeyPath = System.getenv("SSH_KEY_PATH")
         }
 
         if (System.getenv("RELATIVE_TRANSLATION_FILE_PATH") != null) {
-            relativeTranslationFilePath = System.getenv("RELATIVE_TRANSLATION_FILE_PATH");
+            relativeTranslationFilePath = System.getenv("RELATIVE_TRANSLATION_FILE_PATH")
+        }
+
+        if (System.getenv("GIT_URI") != null) {
+            gitUri = System.getenv("GIT_URI")
+        }
+
+        if (System.getenv("GIT_BRANCH") != null) {
+            gitBranch = System.getenv("GIT_BRANCH")
         }
 
         var conf = Config(
             gitProjectPath = gitProjectPath,
             relativeTranslationFilePath = relativeTranslationFilePath,
             sshKeyPath = sshKeyPath,
-            gitUri = System.getenv("GIT_URI"),
-            gitBranch = System.getenv("GIT_BRANCH")
+            gitUri = gitUri,
+            gitBranch = gitBranch
         )
 
         if (!conf.gitUri.isNullOrEmpty()) {
