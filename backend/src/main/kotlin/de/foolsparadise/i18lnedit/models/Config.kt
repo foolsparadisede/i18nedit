@@ -5,5 +5,5 @@ data class Config(
     val gitUri: String,
     val relativeTranslationFilePath: String,
     val sshKeyPath: String,
-    val gitBranch: String,
+    val gitBranch: String
 )
