@@ -8,8 +8,12 @@ import de.foolsparadise.i18lnedit.service.GitService
 import de.foolsparadise.i18lnedit.service.TranslationIOService
 import io.ktor.application.ApplicationCall
 import io.ktor.http.ContentType
+import io.ktor.http.charset
+import io.ktor.request.contentType
+import io.ktor.request.receiveStream
 import io.ktor.request.receiveText
 import io.ktor.response.respondText
+import kotlinx.io.charsets.Charset
 import mu.KotlinLogging
 
 class Controller(
@@ -20,6 +24,22 @@ class Controller(
     private val log = KotlinLogging.logger {}
 
     private val gson = Gson()
+
+    /**
+     * Receive the request as String.
+     * If there is no Content-Type in the HTTP header specified use ISO_8859_1 as default charset, see https://www.w3.org/International/articles/http-charset/index#charset.
+     * But use UTF-8 as default charset for application/json, see https://tools.ietf.org/html/rfc4627#section-3
+     */
+    private suspend fun ApplicationCall.receiveTextWithCorrectEncoding(): String {
+        fun ContentType.defaultCharset(): Charset = when (this) {
+            ContentType.Application.Json -> Charsets.UTF_8
+            else -> Charsets.ISO_8859_1
+        }
+
+        val contentType = request.contentType()
+        val suitableCharset = contentType.charset() ?: contentType.defaultCharset()
+        return receiveStream().bufferedReader(charset = suitableCharset).readText()
+    }
 
     fun initGit() {
         if (!gitService.checkIfAlreadyCloned()) {
@@ -60,7 +80,7 @@ class Controller(
 
     suspend fun update(call: ApplicationCall) {
         val listType = object : TypeToken<List<TranslationItem>>() {}.type
-        val changes: List<TranslationItem> = gson.fromJson(call.receiveText(), listType)
+        val changes: List<TranslationItem> = gson.fromJson(call.receiveTextWithCorrectEncoding(), listType)
 
         if (changes.isNotEmpty()) {
             translationIOService.updateTranslations(changes)
