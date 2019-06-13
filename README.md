@@ -64,6 +64,6 @@ then put in the absolute path to the config file and your ssh key and run the fo
   
 
 ```bash
-sudo docker run -e CONFIG_PATH=/i18nedit/config.json -p 8080:8080 -v /path/to/id_rsa:/i18nedit/id_rsa -v /path/to/config.json:/i18nedit/config.json foolsparadise/i18nedit
+sudo docker run -e CONFIG_FILE=/i18nedit/config.json -p 8080:8080 -v /path/to/id_rsa:/i18nedit/id_rsa -v /path/to/config.json:/i18nedit/config.json foolsparadise/i18nedit
 ```
 
