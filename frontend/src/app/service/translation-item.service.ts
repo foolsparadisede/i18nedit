@@ -63,9 +63,9 @@ export class TranslationItemService {
   addKey() {
     const newKey = TranslationItem.create(this.languages);
 
-    this.translations.push(newKey);
+    this.translations.splice(0, 0, newKey);
     this.filteredTranslationsSubject.next(
-      this.currentFilteredTranslationItems.concat([newKey])
+      [newKey].concat(this.currentFilteredTranslationItems)
     );
   }
 }
