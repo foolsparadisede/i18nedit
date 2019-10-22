@@ -1,15 +1,15 @@
 <app-default-view>
-  <ng-container *ngFor="let key of translations | async">
-    <app-key-value-edit
-      *ngIf="!key.deleted"
-      [translationItem]="key"
-    ></app-key-value-edit>
-  </ng-container>
   <div class="controls">
     <button mat-flat-button color="primary" (click)="submit()">
       Commit changes
     </button>
     <button mat-stroked-button (click)="addKey()">Add Key</button>
   </div>
+  <ng-container *ngFor="let key of translations | async">
+    <app-key-value-edit
+      *ngIf="!key.deleted"
+      [translationItem]="key"
+    ></app-key-value-edit>
+  </ng-container>
 
 </app-default-view>
