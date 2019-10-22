@@ -29,7 +29,7 @@ export class ApiService {
   }
 
   reindex(): Promise<void> {
-    return this.http.post('/reimport', {})
+    return this.http.post(`${environment.apiUrl}/reimport`, {})
                .toPromise()
                .then(() => {});
   }
